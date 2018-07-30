@@ -12,6 +12,9 @@
 #include "settings.h"
 #include "buzzer.h"
 
+ironSleep_t currentSleepSettings;
+ironBoost_t currentBoostSettings;
+
 static iron_mode_t currentMode = mode_standby;
 static uint32_t currentModeTimer = 0;
 static uint16_t currentSetTemperature = 300;
@@ -49,8 +52,8 @@ void setDebugMode(uint8_t value) {
 }
 static void temperatureReached(uint16_t temp) {
 	setTemperatureReachedCallbackStruct_t *s = temperatureReachedCallbacks;
-	while(s) {
-		if(s->callback) {
+	while (s) {
+		if (s->callback) {
 			s->callback(temp);
 		}
 		s = s->next;
@@ -59,7 +62,7 @@ static void temperatureReached(uint16_t temp) {
 
 static void modeChanged(iron_mode_t newMode) {
 	currentModeChangedCallbackStruct_t *s = currentModeChangedCallbacks;
-	while(s) {
+	while (s) {
 		s->callback(newMode);
 		s = s->next;
 	}
@@ -92,25 +95,25 @@ void setSetTemperature(uint16_t temperature) {
 void setCurrentTemperature(uint16_t temperature) {
 	currentSetTemperature = temperature;
 	tempSetPoint = temperature;
-	if((temperature == 0) && getIronOn())
+	if ((temperature == 0) && getIronOn())
 		turnIronOff();
-	else if(!getIronOn())
+	else if (!getIronOn())
 		turnIronOn();
 	resetPID();
 
 }
 void addSetTemperatureReachedCallback(setTemperatureReachedCallback callback) {
 	setTemperatureReachedCallbackStruct_t *s = malloc(sizeof(setTemperatureReachedCallbackStruct_t));
-	if(!s)
-		while(1){}
+	if (!s)
+		while (1) {}
 	s->callback = callback;
 	s->next = NULL;
 	setTemperatureReachedCallbackStruct_t *last = temperatureReachedCallbacks;
-	if(!last) {
+	if (!last) {
 		temperatureReachedCallbacks = s;
 		return;
 	}
-	while(last && last->next != NULL) {
+	while (last && last->next != NULL) {
 		last = last->next;
 	}
 	last->next = s;
@@ -120,10 +123,10 @@ void addModeChangedCallback(currentModeChanged callback) {
 	s->callback = callback;
 	s->next = NULL;
 	currentModeChangedCallbackStruct_t *last = currentModeChangedCallbacks;
-	while(last && last->next != NULL) {
+	while (last && last->next != NULL) {
 		last = last->next;
 	}
-	if(last)
+	if (last)
 		last->next = s;
 	else
 		last = s;
@@ -133,20 +136,20 @@ void setCurrentMode(iron_mode_t mode) {
 	currentModeTimer = HAL_GetTick();
 	temperatureReachedFlag = 0;
 	switch (mode) {
-		case mode_boost:
-			setCurrentTemperature(currentBoostSettings.temperature);
-			break;
-		case mode_set:
-			setCurrentTemperature(user_currentSetTemperature);
-			break;
-		case mode_sleep:
-			setCurrentTemperature(currentSleepSettings.sleepTemperature);
-			break;
-		case mode_standby:
-			setCurrentTemperature(0);
-			break;
-		default:
-			break;
+	case mode_boost:
+		setCurrentTemperature(currentBoostSettings.temperature);
+		break;
+	case mode_set:
+		setCurrentTemperature(user_currentSetTemperature);
+		break;
+	case mode_sleep:
+		setCurrentTemperature(currentSleepSettings.sleepTemperature);
+		break;
+	case mode_standby:
+		setCurrentTemperature(0);
+		break;
+	default:
+		break;
 	}
 	currentMode = mode;
 	modeChanged(mode);
@@ -159,63 +162,63 @@ uint16_t getSetTemperature() {
 }
 void handleIron(uint8_t activity) {
 	uint32_t currentTime = HAL_GetTick();
-	if(setTemperatureChanged && (currentTime - lastSetTemperatureTime > 5000)) {
+	if (setTemperatureChanged && (currentTime - lastSetTemperatureTime > 5000)) {
 		setTemperatureChanged = 0;
-		if(systemSettings.setTemperature != user_currentSetTemperature) {
+		if (systemSettings.setTemperature != user_currentSetTemperature) {
 			systemSettings.setTemperature = user_currentSetTemperature;
 			saveSettings();
 		}
 	}
 	switch (currentMode) {
-		case mode_boost:
-			if(currentTime - currentModeTimer > (currentBoostSettings.time * 1000))
-				setCurrentMode(mode_set);
-			break;
-		case mode_set:
-			if(activity)
-				currentModeTimer = currentTime;
-			else if(currentTime - currentModeTimer > (currentSleepSettings.sleepTime * 1000)) {
-				setCurrentMode(mode_sleep);
-				buzzer_short_beep();
-			}
-			else if(currentTime - currentModeTimer > (currentSleepSettings.standbyTime * 1000 * 60)) {
-				setCurrentMode(mode_standby);
-				buzzer_long_beep();
-			}
-			break;
-		case mode_sleep:
-			if(activity) {
-				setCurrentMode(mode_set);
-				buzzer_short_beep();
-			}
-			else if(currentTime - currentTime > (currentSleepSettings.standbyTime * 1000 * 60)) {
-				setCurrentMode(mode_standby);
-				buzzer_long_beep();
-			}
-			break;
-		case mode_standby:
-			break;
-		default:
-			break;
+	case mode_boost:
+		if (currentTime - currentModeTimer > (currentBoostSettings.time * 1000))
+			setCurrentMode(mode_set);
+		break;
+	case mode_set:
+		if (activity)
+			currentModeTimer = currentTime;
+		else if (currentTime - currentModeTimer > (currentSleepSettings.sleepTime * 1000)) {
+			setCurrentMode(mode_sleep);
+			buzzer_short_beep();
+		}
+		else if (currentTime - currentModeTimer > (currentSleepSettings.standbyTime * 1000 * 60)) {
+			setCurrentMode(mode_standby);
+			buzzer_long_beep();
+		}
+		break;
+	case mode_sleep:
+		if (activity) {
+			setCurrentMode(mode_set);
+			buzzer_short_beep();
+		}
+		else if (currentTime - currentTime > (currentSleepSettings.standbyTime * 1000 * 60)) {
+			setCurrentMode(mode_standby);
+			buzzer_long_beep();
+		}
+		break;
+	case mode_standby:
+		break;
+	default:
+		break;
 	}
 
-	  double set;
-	  if(debugMode)
-		  set = calculatePID(debugSetPoint, iron_temp_adc_avg);
-	  else
-		  set = calculatePID(human2adc(tempSetPoint), iron_temp_adc_avg);
-	  if(isIronOn)
-		  currentIronPower = set * 100;
-	  else
-		  currentIronPower = 0;
-	  set = 1500.0 *(set * 100.0 -12.0388878376)/102.72647713;
-	  if(set < 0)
-		  set = 0;
-	  __HAL_TIM_SET_COMPARE(ironPWMTimer, TIM_CHANNEL_3, set);
-	  if((getSetTemperature() == readTipTemperatureCompensated(0)) && !temperatureReachedFlag) {
-		  temperatureReached(getSetTemperature());
-		  temperatureReachedFlag = 1;
-	  }
+	double set;
+	if (debugMode)
+		set = calculatePID(debugSetPoint, iron_temp_adc_avg);
+	else
+		set = calculatePID(human2adc(tempSetPoint), iron_temp_adc_avg);
+	if (isIronOn)
+		currentIronPower = set * 100;
+	else
+		currentIronPower = 0;
+	set = 1500.0 *(set * 100.0 - 12.0388878376) / 102.72647713;
+	if (set < 0)
+		set = 0;
+	__HAL_TIM_SET_COMPARE(ironPWMTimer, TIM_CHANNEL_3, set);
+	if ((getSetTemperature() == readTipTemperatureCompensated(0)) && !temperatureReachedFlag) {
+		temperatureReached(getSetTemperature());
+		temperatureReachedFlag = 1;
+	}
 }
 
 void ironInit(TIM_HandleTypeDef *timer) {

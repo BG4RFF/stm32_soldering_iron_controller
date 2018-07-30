@@ -16,7 +16,7 @@ static uint8_t hasIron = 1;
 static uint16_t m_tip = 0;
 static uint16_t m_mode = 0;
 static uint16_t m_temp = 0;
-static char *modestr[] = {"STB:", "BOO:", "SLP:", "SET:"};
+static char *modestr[] = { "STB:", "BOO:", "SLP:", "SET:" };
 static char *tipstr[sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0])];
 static multi_option_widget_t *tipsWidget = NULL;
 static widget_t *ironTempWidget;
@@ -59,7 +59,7 @@ void * getTip() {
 }
 
 static uint16_t temp;
-const unsigned char therm [] = {
+const unsigned char therm[] = {
 		0x00, 0x00, 0x00, 0xC0, 0x20, 0xC0, 0x00, 0x00,
 		0x00, 0x20, 0x70, 0xFF, 0xFE, 0xFF, 0x70, 0x20
 
@@ -67,18 +67,18 @@ const unsigned char therm [] = {
 
 static int tempProcessInput(widget_t* w, RE_Rotation_t r, RE_State_t * s) {
 	switch (w->editable.selectable.state) {
-		case widget_selected:
-			if(r == Click && getCurrentMode() != mode_set)
-				setCurrentMode(mode_set);
-			break;
-		case widget_edit:
-			if(r != Rotate_Nothing && r != LongClick && getCurrentMode() != mode_set) {
-				setCurrentMode(mode_set);
-				return -1;
-			}
-			break;
-		default:
-			break;
+	case widget_selected:
+		if (r == Click && getCurrentMode() != mode_set)
+			setCurrentMode(mode_set);
+		break;
+	case widget_edit:
+		if (r != Rotate_Nothing && r != LongClick && getCurrentMode() != mode_set) {
+			setCurrentMode(mode_set);
+			return -1;
+		}
+		break;
+	default:
+		break;
 	}
 	return default_widgetProcessInput(w, r, s);
 }
@@ -104,7 +104,7 @@ static void main_screen_init(screen_t *scr) {
 }
 void main_screenUpdate(screen_t *scr) {
 	uint16_t t = iron_temp_adc_avg;
-	if((t > NO_IRON_ADC) && hasIron) {
+	if ((t > NO_IRON_ADC) && hasIron) {
 		UG_FillScreen(C_BLACK);
 		ironTempLabelWidget->enabled = 0;
 		ironTempWidget->enabled = 0;
@@ -112,7 +112,7 @@ void main_screenUpdate(screen_t *scr) {
 		buzzer_alarm_start();
 		hasIron = 0;
 	}
-	else if((t <= NO_IRON_ADC) && !hasIron){
+	else if ((t <= NO_IRON_ADC) && !hasIron) {
 		UG_FillScreen(C_BLACK);
 		ironTempLabelWidget->enabled = 1;
 		ironTempWidget->enabled = 1;
@@ -124,7 +124,7 @@ void main_screenUpdate(screen_t *scr) {
 
 }
 void main_screen_setup(screen_t *scr) {
-	for(int x = 0; x < sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0]); ++x) {
+	for (int x = 0; x < sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0]); ++x) {
 		tipstr[x] = systemSettings.ironTips[x].name;
 	}
 	scr->draw = &default_screenDraw;
@@ -171,7 +171,7 @@ void main_screen_setup(screen_t *scr) {
 	widgetDefaultsInit(widget, widget_label);
 	s = "\247C";
 	strcpy(widget->displayString, s);
-	widget->posX = 50 + 3 * 12 -5 + 3;
+	widget->posX = 50 + 3 * 12 - 5 + 3;
 	widget->posY = 20 + 5 - 2;
 	widget->font_size = &FONT_16X26;
 	widget->reservedChars = 2;
@@ -215,7 +215,7 @@ void main_screen_setup(screen_t *scr) {
 	// tip temperature setpoint
 	widget = screen_addWidget(scr);
 	widgetDefaultsInit(widget, widget_editable);
-	widget->editable.selectable.processInput = (int (*)(widget_t*, RE_Rotation_t, RE_State_t *))&tempProcessInput;
+	widget->editable.selectable.processInput = (int(*)(widget_t*, RE_Rotation_t, RE_State_t *))&tempProcessInput;
 	widget->posX = 36;
 	widget->posY = 1;
 	widget->font_size = &FONT_8X14;
@@ -225,7 +225,7 @@ void main_screen_setup(screen_t *scr) {
 	widget->editable.big_step = 10;
 	widget->editable.step = 1;
 	widget->editable.selectable.tab = 0;
-	widget->editable.setData = (void (*)(void *))&setTemp;
+	widget->editable.setData = (void(*)(void *))&setTemp;
 	widget->reservedChars = 3;
 	widget->editable.selectable.state = widget_edit;
 	widget->editable.selectable.longPressAction = &boostOn;
@@ -243,7 +243,7 @@ void main_screen_setup(screen_t *scr) {
 	widget->multiOptionWidget.editable.big_step = 0;
 	widget->multiOptionWidget.editable.step = 0;
 	widget->multiOptionWidget.editable.selectable.tab = 2;
-	widget->multiOptionWidget.editable.setData = (void (*)(void *))&setMode;
+	widget->multiOptionWidget.editable.setData = (void(*)(void *))&setMode;
 
 	widget->reservedChars = 4;
 
@@ -263,7 +263,7 @@ void main_screen_setup(screen_t *scr) {
 	widget->multiOptionWidget.editable.big_step = 0;
 	widget->multiOptionWidget.editable.step = 0;
 	widget->multiOptionWidget.editable.selectable.tab = 1;
-	widget->multiOptionWidget.editable.setData = (void (*)(void *))&setTip;
+	widget->multiOptionWidget.editable.setData = (void(*)(void *))&setTip;
 
 	widget->reservedChars = 5;
 

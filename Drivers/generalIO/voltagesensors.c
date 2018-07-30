@@ -14,13 +14,13 @@ uint16_t getSupplyVoltage_mv() {
 	uint16_t measure;
 	uint8_t valid_samples = 0;
 	uint8_t temp;
-	for(temp = 0; temp < (sizeof(adc_measures)/sizeof(adc_measures_t)) - 1; ++temp) {
+	for (temp = 0; temp < (sizeof(adc_measures) / sizeof(adc_measures_t)) - 1; ++temp) {
 		measure = adc_measures[temp].supply;
 		ad_sum += measure;
 		++valid_samples;
-		if(measure < min)
+		if (measure < min)
 			min = measure;
-		if(measure > max)
+		if (measure > max)
 			max = measure;
 	}
 	ad_sum = ad_sum - max - min;
@@ -34,13 +34,13 @@ uint16_t getReferenceVoltage_mv() {
 	uint16_t measure;
 	uint8_t valid_samples = 0;
 	uint8_t temp;
-	for(temp = 0; temp < (sizeof(adc_measures)/sizeof(adc_measures_t)) - 1; ++temp) {
+	for (temp = 0; temp < (sizeof(adc_measures) / sizeof(adc_measures_t)) - 1; ++temp) {
 		measure = adc_measures[temp].reference;
 		ad_sum += measure;
 		++valid_samples;
-		if(measure < min)
+		if (measure < min)
 			min = measure;
-		if(measure > max)
+		if (measure > max)
 			max = measure;
 	}
 	ad_sum = ad_sum - max - min;

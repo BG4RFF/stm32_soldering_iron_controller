@@ -23,13 +23,13 @@ static uint16_t BTIME = 0;
 static uint16_t SLEEPTIME = 0;
 static uint16_t STANDBYTIME = 0;
 static uint16_t SLEEPTEMP = 0;
-static char str[20]="aaa";
+static char str[20] = "aaa";
 static widget_t *tipCombo = NULL;
 static widget_t *delTipButton = NULL;
 static comboBox_item_t *addNewTipComboItem = NULL;
 
 static void edit_iron_tip_screen_init(screen_t *scr) {
-	if(strcmp(tipCombo->comboBoxWidget.currentItem->text, "ADD NEW") == 0) {
+	if (strcmp(tipCombo->comboBoxWidget.currentItem->text, "ADD NEW") == 0) {
 		strcpy(str, "   ");
 		delTipButton->enabled = 0;
 	}
@@ -41,8 +41,8 @@ static void edit_iron_tip_screen_init(screen_t *scr) {
 }
 static void edit_iron_screen_init(screen_t *scr) {
 	comboBox_item_t *i = tipCombo->comboBoxWidget.items;
-	for(int x = 0; x < sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0]); ++x) {
-		if(x < systemSettings.currentNumberOfTips) {
+	for (int x = 0; x < sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0]); ++x) {
+		if (x < systemSettings.currentNumberOfTips) {
 			strcpy(i->text, systemSettings.ironTips[x].name);
 			i->enabled = 1;
 		}
@@ -52,7 +52,7 @@ static void edit_iron_screen_init(screen_t *scr) {
 	}
 	tipCombo->comboBoxWidget.currentItem = tipCombo->comboBoxWidget.items;
 	tipCombo->comboBoxWidget.currentScroll = 0;
-	if(systemSettings.currentNumberOfTips > sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0])) {
+	if (systemSettings.currentNumberOfTips > sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0])) {
 		addNewTipComboItem->enabled = 0;
 	}
 }
@@ -64,14 +64,14 @@ static void setTipStr(char *s) {
 	strcpy(str, s);
 }
 static int saveTip(widget_t *w) {
-	if(strcmp(tipCombo->comboBoxWidget.currentItem->text, "ADD NEW") == 0) {
+	if (strcmp(tipCombo->comboBoxWidget.currentItem->text, "ADD NEW") == 0) {
 		strcpy(systemSettings.ironTips[systemSettings.currentNumberOfTips].name, str);
 		++systemSettings.currentNumberOfTips;
 		saveSettings();
 	}
 	else {
-		for(int x = 0; x < sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0]); ++ x) {
-			if(strcmp(tipCombo->comboBoxWidget.currentItem->text, systemSettings.ironTips[x].name) == 0) {
+		for (int x = 0; x < sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0]); ++x) {
+			if (strcmp(tipCombo->comboBoxWidget.currentItem->text, systemSettings.ironTips[x].name) == 0) {
 				strcpy(systemSettings.ironTips[x].name, str);
 				saveSettings();
 				break;
@@ -85,13 +85,13 @@ static int cancelTip(widget_t *w) {
 }
 static int delTip(widget_t *w) {
 	uint8_t itemIndex = 0;
-	for(int x = 0; x < sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0]); ++ x) {
-		if(strcmp(tipCombo->comboBoxWidget.currentItem->text, systemSettings.ironTips[x].name) == 0) {
+	for (int x = 0; x < sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0]); ++x) {
+		if (strcmp(tipCombo->comboBoxWidget.currentItem->text, systemSettings.ironTips[x].name) == 0) {
 			itemIndex = x;
 			break;
 		}
 	}
-	for(int x = itemIndex; x < sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0]) - 1; ++ x) {
+	for (int x = itemIndex; x < sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0]) - 1; ++x) {
 		systemSettings.ironTips[x] = systemSettings.ironTips[x + 1];
 	}
 	--systemSettings.currentNumberOfTips;
@@ -312,7 +312,7 @@ void settings_screen_setup(screen_t *scr) {
 	w->editable.big_step = 100;
 	w->editable.step = 1;
 	w->editable.selectable.tab = 0;
-	w->editable.setData = (void (*)(void *))&setKp;
+	w->editable.setData = (void(*)(void *))&setKp;
 	w->reservedChars = 6;
 
 	w = screen_addWidget(sc);
@@ -335,7 +335,7 @@ void settings_screen_setup(screen_t *scr) {
 	w->editable.big_step = 100;
 	w->editable.step = 1;
 	w->editable.selectable.tab = 1;
-	w->editable.setData = (void (*)(void *))&setKi;
+	w->editable.setData = (void(*)(void *))&setKi;
 	w->reservedChars = 6;
 
 	w = screen_addWidget(sc);
@@ -358,7 +358,7 @@ void settings_screen_setup(screen_t *scr) {
 	w->editable.big_step = 100;
 	w->editable.step = 1;
 	w->editable.selectable.tab = 2;
-	w->editable.setData = (void (*)(void *))&setKd;
+	w->editable.setData = (void(*)(void *))&setKd;
 	w->reservedChars = 6;
 
 	w = screen_addWidget(sc);
@@ -419,7 +419,7 @@ void settings_screen_setup(screen_t *scr) {
 	w->editable.big_step = 10;
 	w->editable.step = 1;
 	w->editable.selectable.tab = 0;
-	w->editable.setData = (void (*)(void *))&setContrast_;
+	w->editable.setData = (void(*)(void *))&setContrast_;
 	w->editable.max_value = 255;
 	w->reservedChars = 3;
 
@@ -480,7 +480,7 @@ void settings_screen_setup(screen_t *scr) {
 	w->editable.big_step = 10;
 	w->editable.step = 1;
 	w->editable.selectable.tab = 0;
-	w->editable.setData = (void (*)(void *))&setMaxPower;
+	w->editable.setData = (void(*)(void *))&setMaxPower;
 	w->editable.max_value = 100;
 	w->editable.min_value = 1;
 	w->reservedChars = 3;
@@ -551,7 +551,7 @@ void settings_screen_setup(screen_t *scr) {
 	w->editable.big_step = 10;
 	w->editable.step = 1;
 	w->editable.selectable.tab = 0;
-	w->editable.setData = (void (*)(void *))&setBoostTime;
+	w->editable.setData = (void(*)(void *))&setBoostTime;
 	w->editable.max_value = 65535;
 	w->reservedChars = 5;
 
@@ -566,7 +566,7 @@ void settings_screen_setup(screen_t *scr) {
 	w->editable.big_step = 10;
 	w->editable.step = 1;
 	w->editable.selectable.tab = 1;
-	w->editable.setData = (void (*)(void *))&setBoostTemp;
+	w->editable.setData = (void(*)(void *))&setBoostTemp;
 	w->editable.max_value = 450;
 	w->reservedChars = 3;
 
@@ -627,7 +627,7 @@ void settings_screen_setup(screen_t *scr) {
 	w->editable.big_step = 10;
 	w->editable.step = 1;
 	w->editable.selectable.tab = 0;
-	w->editable.setData = (void (*)(void *))&setSleepTime;
+	w->editable.setData = (void(*)(void *))&setSleepTime;
 	w->editable.max_value = 999;
 	w->reservedChars = 3;
 
@@ -651,7 +651,7 @@ void settings_screen_setup(screen_t *scr) {
 	w->editable.big_step = 10;
 	w->editable.step = 1;
 	w->editable.selectable.tab = 1;
-	w->editable.setData = (void (*)(void *))&setSleepTemp;
+	w->editable.setData = (void(*)(void *))&setSleepTemp;
 	w->reservedChars = 3;
 	w->editable.max_value = 450;
 
@@ -675,7 +675,7 @@ void settings_screen_setup(screen_t *scr) {
 	w->editable.big_step = 10;
 	w->editable.step = 1;
 	w->editable.selectable.tab = 2;
-	w->editable.setData = (void (*)(void *))&setStandByTime;
+	w->editable.setData = (void(*)(void *))&setStandByTime;
 	w->reservedChars = 3;
 	w->editable.max_value = 999;
 
@@ -721,11 +721,11 @@ void settings_screen_setup(screen_t *scr) {
 	widgetDefaultsInit(w, widget_combo);
 	w->posY = 17;
 	w->font_size = &FONT_6X8;
-	for(int x = 0; x < sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0]); ++x) {
-		char *t = malloc(sizeof(systemSettings.ironTips[0].name)/sizeof(systemSettings.ironTips[0].name[0]));
+	for (int x = 0; x < sizeof(systemSettings.ironTips) / sizeof(systemSettings.ironTips[0]); ++x) {
+		char *t = malloc(sizeof(systemSettings.ironTips[0].name) / sizeof(systemSettings.ironTips[0].name[0]));
 		t[0] = '\0';
-		if(!t)
-		    _Error_Handler(__FILE__, __LINE__);
+		if (!t)
+			_Error_Handler(__FILE__, __LINE__);
 		comboAddItem(w, t, screen_edit_tip_name);
 	}
 	addNewTipComboItem = comboAddItem(w, "ADD NEW", screen_edit_tip_name);
@@ -759,7 +759,7 @@ void settings_screen_setup(screen_t *scr) {
 	w->editable.big_step = 10;
 	w->editable.step = 1;
 	w->editable.selectable.tab = 0;
-	w->editable.setData = (void (*)(void *))&setTipStr;
+	w->editable.setData = (void(*)(void *))&setTipStr;
 	w->editable.max_value = 9999;
 	w->reservedChars = 4;
 

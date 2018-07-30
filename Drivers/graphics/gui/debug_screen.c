@@ -10,12 +10,12 @@
 #include "tempsensors.h"
 
 uint16_t temp;
-static TIM_HandleTypeDef *htim4;
+// static TIM_HandleTypeDef *htim4;
 uint16_t debugSetPoint = 0;
 static pid_values_t cal_pid;
 
-void setPWM_tim(TIM_HandleTypeDef *tim){
-	htim4 = tim;
+void setPWM_tim(TIM_HandleTypeDef *tim) {
+//	htim4 = tim;
 }
 
 static void * debug_screen_getADC1_1() {
@@ -193,7 +193,7 @@ void debug_screen2_setup(screen_t *scr) {
 	widget->editable.big_step = 100;
 	widget->editable.step = 1;
 	widget->editable.selectable.tab = 0;
-	widget->editable.setData = (void (*)(void *))&debug_screen2_setDebugSetpoint;
+	widget->editable.setData = (void(*)(void *))&debug_screen2_setDebugSetpoint;
 	widget->reservedChars = 5;
 
 	widget = screen_addWidget(scr);
@@ -207,7 +207,7 @@ void debug_screen2_setup(screen_t *scr) {
 	widget->editable.big_step = 100;
 	widget->editable.step = 1;
 	widget->editable.selectable.tab = 1;
-	widget->editable.setData = (void (*)(void *))&debug_screen2_setCalcAt200;
+	widget->editable.setData = (void(*)(void *))&debug_screen2_setCalcAt200;
 	widget->reservedChars = 5;
 
 	widget = screen_addWidget(scr);
@@ -221,7 +221,7 @@ void debug_screen2_setup(screen_t *scr) {
 	widget->editable.big_step = 100;
 	widget->editable.step = 1;
 	widget->editable.selectable.tab = 2;
-	widget->editable.setData = (void (*)(void *))&debug_screen2_setCalcAt300;
+	widget->editable.setData = (void(*)(void *))&debug_screen2_setCalcAt300;
 	widget->reservedChars = 5;
 
 	widget = screen_addWidget(scr);
@@ -235,7 +235,7 @@ void debug_screen2_setup(screen_t *scr) {
 	widget->editable.big_step = 100;
 	widget->editable.step = 1;
 	widget->editable.selectable.tab = 3;
-	widget->editable.setData = (void (*)(void *))&debug_screen2_setCalcAt400;
+	widget->editable.setData = (void(*)(void *))&debug_screen2_setCalcAt400;
 	widget->reservedChars = 5;
 
 	widget = screen_addWidget(scr);

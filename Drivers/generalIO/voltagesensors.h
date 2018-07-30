@@ -10,7 +10,7 @@
 
 #include "adc_global.h"
 
-uint16_t getSupplyVoltage_mv();
-uint16_t getReferenceVoltage_mv();
+uint16_t getSupplyVoltage_mv(void);
+uint16_t getReferenceVoltage_mv(void);
 
 #endif /* GENERALIO_VOLTAGESENSORS_H_ */

@@ -35,25 +35,25 @@ typedef struct tipData {
 	pid_values_t PID;
 } tipData;
 
-ironSleep_t currentSleepSettings;
-ironBoost_t currentBoostSettings;
+extern ironSleep_t currentSleepSettings;
+extern ironBoost_t currentBoostSettings;
 
 void setCurrentMode(iron_mode_t mode);
 void setSetTemperature(uint16_t temperature);
 void setCurrentTemperature(uint16_t temperature);
-iron_mode_t getCurrentMode();
-uint16_t getSetTemperature();
-uint16_t getCurrentTemperature();
-uint8_t getCurrentPower();
+iron_mode_t getCurrentMode(void);
+uint16_t getSetTemperature(void);
+uint16_t getCurrentTemperature(void);
+uint8_t getCurrentPower(void);
 void addSetTemperatureReachedCallback(setTemperatureReachedCallback callback);
 void addModeChangedCallback(currentModeChanged callback);
-void applyBoostSettings();
-void applySleepSettings();
+void applyBoostSettings(void);
+void applySleepSettings(void);
 void handleIron(uint8_t activity);
 void ironInit(TIM_HandleTypeDef *timer);
-void turnIronOn();
-void turnIronOff();
-uint8_t getIronOn();
+void turnIronOn(void);
+void turnIronOff(void);
+uint8_t getIronOn(void);
 void setDebugSetPoint(uint16_t value);
 void setDebugMode(uint8_t value);
 #endif /* IRON_H_ */

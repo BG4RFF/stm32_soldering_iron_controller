@@ -12,8 +12,8 @@
 #include "../../generalIO/tempsensors.h"
 #include "../../graphics/gui/oled.h"
 
-typedef enum {cal_200, cal_300, cal_400, cal_end}state_t;
-static uint16_t state_temps[3] = {200, 300, 400};
+typedef enum { cal_200, cal_300, cal_400, cal_end }state_t;
+static uint16_t state_temps[3] = { 200, 300, 400 };
 static uint16_t measured_temps[3];
 static uint16_t adcAtTemp[3];
 static state_t current_state = cal_200;
@@ -26,13 +26,13 @@ static widget_t *waitTemp = NULL;
 static iron_mode_t ironModeBackup;
 static uint16_t tempSetBackup;
 static uint16_t adcCal[3];
-static uint8_t processCalibration();
+static uint8_t processCalibration(void);
 static pid_values_t cal_pid;
 static screen_t *calInputScreen;
 static screen_t *calWaitScreen;
 
 static void tempReached(uint16_t temp) {
-	if(temp == state_temps[(int)current_state])
+	if (temp == state_temps[(int)current_state])
 		tempReady = 1;
 }
 static setTemperatureReachedCallback tempReachedCallback = &tempReached;
@@ -45,7 +45,7 @@ static void setMeasuredTemp(void *temp) {
 }
 static void setCalState(state_t s) {
 	current_state = s;
-	if(current_state != cal_end) {
+	if (current_state != cal_end) {
 		setSetTemperature(state_temps[(int)s]);
 		setCurrentMode(mode_set);
 		sprintf(waitStr, "Setting temp.to %dC", state_temps[(int)s]);
@@ -56,7 +56,7 @@ static void setCalState(state_t s) {
 		strcpy(cancelButton->displayString, "Finish");
 		uint8_t result = processCalibration();
 		waitWidget->posX = 20;
-		if(result) {
+		if (result) {
 			strcpy(waitWidget->displayString, "Cal succeed");
 			tipData * t = getCurrentTip();
 			t->calADC_At_200 = adcCal[cal_200];
@@ -76,7 +76,7 @@ static int cancelAction(widget_t* w) {
 
 static int okAction(widget_t *w) {
 	tempReady = 0;
-	if(current_state == cal_end) {
+	if (current_state == cal_end) {
 		current_state = cal_200;
 		return screen_main;
 	}
@@ -99,12 +99,12 @@ static void inputCalibration_screen_init(screen_t *scr) {
 }
 
 int waitProcessInput(struct screen_t *scr, RE_Rotation_t input, RE_State_t *s) {
-	if(tempReady)
+	if (tempReady)
 		return screen_edit_calibration_input;
 	return default_screenProcessInput(scr, input, s);
 }
 static void waitOnEnter(screen_t *scr) {
-	if(scr != calInputScreen) {
+	if (scr != calInputScreen) {
 		UG_FontSetHSpace(0);
 		UG_FontSetVSpace(0);
 		waitTemp->enabled = 1;
@@ -120,7 +120,7 @@ static void waitOnEnter(screen_t *scr) {
 	}
 }
 static void waitOnExit(screen_t *scr) {
-	if(scr != calWaitScreen && scr != calInputScreen) {
+	if (scr != calWaitScreen && scr != calInputScreen) {
 		tempReady = 0;
 		current_state = cal_200;
 		setSetTemperature(tempSetBackup);
@@ -222,30 +222,30 @@ void calibration_screen_setup(screen_t *scr) {
 }
 
 static uint8_t processCalibration() {
-	  uint16_t delta = state_temps[1] - state_temps[0]; delta >>= 1;
-	  uint16_t ambient = readColdJunctionSensorTemp_mC() / 1000;
+	uint16_t delta = state_temps[1] - state_temps[0]; delta >>= 1;
+	uint16_t ambient = readColdJunctionSensorTemp_mC() / 1000;
 
-	  if ((measured_temps[cal_300] > measured_temps[cal_200]) && ((measured_temps[cal_200] + delta) < measured_temps[cal_300]))
-	    adcCal[cal_300] = map(state_temps[cal_300], measured_temps[cal_200], measured_temps[cal_300], adcAtTemp[cal_200], adcAtTemp[cal_300]);
-	  else
-	    adcCal[1] = map(state_temps[1], ambient, measured_temps[1], 0, adcAtTemp[1]);
-	  adcCal[cal_300] += map(state_temps[cal_300], measured_temps[cal_200], measured_temps[cal_400], adcAtTemp[cal_200], adcAtTemp[cal_400]) + 1;
-	  adcCal[1] >>= 1;
+	if ((measured_temps[cal_300] > measured_temps[cal_200]) && ((measured_temps[cal_200] + delta) < measured_temps[cal_300]))
+		adcCal[cal_300] = map(state_temps[cal_300], measured_temps[cal_200], measured_temps[cal_300], adcAtTemp[cal_200], adcAtTemp[cal_300]);
+	else
+		adcCal[1] = map(state_temps[1], ambient, measured_temps[1], 0, adcAtTemp[1]);
+	adcCal[cal_300] += map(state_temps[cal_300], measured_temps[cal_200], measured_temps[cal_400], adcAtTemp[cal_200], adcAtTemp[cal_400]) + 1;
+	adcCal[1] >>= 1;
 
-	  if ((measured_temps[1] > measured_temps[0]) && ((measured_temps[0] + delta) < measured_temps[1]))
-	    adcCal[0] = map(state_temps[0], measured_temps[0], state_temps[1], adcAtTemp[0], adcCal[1]);
-	  else
-	    adcCal[0] = map(state_temps[0], ambient, state_temps[1], 0, adcCal[1]);
+	if ((measured_temps[1] > measured_temps[0]) && ((measured_temps[0] + delta) < measured_temps[1]))
+		adcCal[0] = map(state_temps[0], measured_temps[0], state_temps[1], adcAtTemp[0], adcCal[1]);
+	else
+		adcCal[0] = map(state_temps[0], ambient, state_temps[1], 0, adcCal[1]);
 
-	  if ((measured_temps[2] > measured_temps[1]) && ((measured_temps[1] + delta) < measured_temps[2]))
-	    adcCal[2] = map(state_temps[2], state_temps[1], measured_temps[2], adcCal[1], adcAtTemp[2]);
-	  else
-	    adcCal[2] = map(state_temps[2], state_temps[0], measured_temps[2], adcCal[1], adcAtTemp[2]);
+	if ((measured_temps[2] > measured_temps[1]) && ((measured_temps[1] + delta) < measured_temps[2]))
+		adcCal[2] = map(state_temps[2], state_temps[1], measured_temps[2], adcCal[1], adcAtTemp[2]);
+	else
+		adcCal[2] = map(state_temps[2], state_temps[0], measured_temps[2], adcCal[1], adcAtTemp[2]);
 
-	  if (((adcCal[0] + delta) > adcCal[1]) || ((adcCal[1] + delta) > adcCal[2])) {
-	    adcCal[0] = map(state_temps[0], measured_temps[0], measured_temps[2], adcAtTemp[0], adcAtTemp[2]);
-	    adcCal[1] = map(state_temps[1], measured_temps[0], measured_temps[2], adcAtTemp[0], adcAtTemp[2]);
-	    adcCal[2] = map(state_temps[2], measured_temps[0], measured_temps[2], adcAtTemp[0], adcAtTemp[2]);
-	  }
+	if (((adcCal[0] + delta) > adcCal[1]) || ((adcCal[1] + delta) > adcCal[2])) {
+		adcCal[0] = map(state_temps[0], measured_temps[0], measured_temps[2], adcAtTemp[0], adcAtTemp[2]);
+		adcCal[1] = map(state_temps[1], measured_temps[0], measured_temps[2], adcAtTemp[0], adcAtTemp[2]);
+		adcCal[2] = map(state_temps[2], measured_temps[0], measured_temps[2], adcAtTemp[0], adcAtTemp[2]);
+	}
 	return 1;
 }

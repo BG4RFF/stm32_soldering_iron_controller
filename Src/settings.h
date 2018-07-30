@@ -26,10 +26,11 @@ struct systemSettings {
 	uint8_t currentNumberOfTips;
 	uint8_t currentTip;
 	uint16_t setTemperature;
-} systemSettings;
+};
+extern struct systemSettings systemSettings;
 
-void saveSettings();
-void restoreSettings();
-void resetSettings();
+void saveSettings(void);
+void restoreSettings(void);
+void resetSettings(void);
 
 #endif /* SETTINGS_H_ */

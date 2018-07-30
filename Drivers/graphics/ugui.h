@@ -540,12 +540,12 @@ typedef struct
 /* -------------------------------------------------------------------------------- */
 typedef struct
 {
-  void* driver;
-  UG_U8 state;
+	void* driver;
+	UG_U8 state;
 } UG_DRIVER;
 
-#define DRIVER_REGISTERED                             (1<<0)
-#define DRIVER_ENABLED                                (1<<1)
+#define DRIVER_REGISTERED                             (1 << 0)
+#define DRIVER_ENABLED                                (1 << 1)
 
 /* Supported drivers */
 #define NUMBER_OF_DRIVERS                             3

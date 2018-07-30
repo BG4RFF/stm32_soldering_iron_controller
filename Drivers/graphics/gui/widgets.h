@@ -4,7 +4,7 @@
  *  Created on: Aug 11, 2017
  *      Author: jose
  */
-
+#pragma anon_unions
 #ifndef GRAPHICS_GUI_WIDGETS_H_
 #define GRAPHICS_GUI_WIDGETS_H_
 
@@ -75,9 +75,9 @@ typedef struct bmp_wiget_t {
 	UG_BMP bmp;
 } bmp_wiget_t;
 
-typedef struct label_wiget_t {
+/*typedef struct label_wiget_t {
 
-} label_wiget_t;
+} label_wiget_t;*/
 
 typedef struct button_widget_t {
 	int (*action)(widget_t*);
@@ -98,7 +98,7 @@ struct widget_t
 	struct screen_t *parent;
 	void (*draw)(widget_t*);
 	union {
-		label_wiget_t label;
+		//label_wiget_t label;
 		editable_wiget_t editable;
 		displayOnly_wiget_t displayWidget;
 		bmp_wiget_t displayBmp;

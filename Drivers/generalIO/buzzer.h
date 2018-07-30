@@ -14,10 +14,10 @@
 #define LONG_BEEP	1500
 #define ALARM		800
 
-void buzzer_short_beep();
-void buzzer_long_beep();
-void buzzer_alarm_start();
-void buzzer_alarm_stop();
-void handle_buzzer();
-void buzzer_init();
+void buzzer_short_beep(void);
+void buzzer_long_beep(void);
+void buzzer_alarm_start(void);
+void buzzer_alarm_stop(void);
+void handle_buzzer(void);
+void buzzer_init(void);
 #endif /* GENERALIO_BUZZER_H_ */

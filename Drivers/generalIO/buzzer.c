@@ -8,7 +8,7 @@
 #include "buzzer.h"
 #include "../../../Src/iron.h"
 
-typedef enum {STATE_SB, STATE_LB, STATE_AL, STATE_IDLE} buzzer_state_type;
+typedef enum { STATE_SB, STATE_LB, STATE_AL, STATE_IDLE } buzzer_state_type;
 
 static buzzer_state_type buzzer_state = STATE_IDLE;
 static uint32_t last_time;
@@ -36,7 +36,7 @@ void buzzer_long_beep() {
 	BUZZER_ON;
 	last_time = HAL_GetTick();
 }
-void buzzer_alarm_start(){
+void buzzer_alarm_start() {
 	buzzer_state = STATE_AL;
 }
 void buzzer_alarm_stop() {
@@ -65,6 +65,6 @@ void handle_buzzer() {
 		}
 		break;
 	default:
-			break;
+		break;
 	}
 }

@@ -10,6 +10,6 @@
 
 #include "oled.h"
 
-void guiInit();
-void guiDraw();
+void guiInit(void);
+void guiDraw(void);
 #endif /* GRAPHICS_GUI_GUI_H_ */

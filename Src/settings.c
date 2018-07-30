@@ -8,7 +8,7 @@
 #include "settings.h"
 #include <string.h>
 #define FLASH_ADDR (0x8000000|64512)/*Flash start OR'ed with the maximum amount of flash - 256 bytes*/
-//#define JBC
+ //#define JBC
 void saveSettings() {
 	HAL_FLASH_Unlock(); //unlock flash writing
 	FLASH_EraseInitTypeDef erase;
@@ -17,7 +17,7 @@ void saveSettings() {
 	erase.TypeErase = FLASH_TYPEERASE_PAGES;
 	uint32_t error;
 	HAL_FLASHEx_Erase(&erase, &error);
-	uint16_t *data = (uint16_t*) &systemSettings;
+	uint16_t *data = (uint16_t*)&systemSettings;
 	for (uint16_t i = 0; i < (sizeof(systemSettings) / 2); i++) {
 		HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, FLASH_ADDR + (i * 2), data[i]);
 	}
@@ -25,9 +25,9 @@ void saveSettings() {
 }
 
 void restoreSettings() {
-	uint16_t *data = (uint16_t*) &systemSettings;
+	uint16_t *data = (uint16_t*)&systemSettings;
 	for (uint16_t i = 0; i < (sizeof(systemSettings) / 2); i++) {
-		data[i] = *(uint16_t *) (FLASH_ADDR + (i * 2));
+		data[i] = *(uint16_t *)(FLASH_ADDR + (i * 2));
 	}
 	if (systemSettings.version != SETTINGSVERSION) {
 		resetSettings();
@@ -48,25 +48,25 @@ void resetSettings() {
 	systemSettings.currentNumberOfTips = 1;
 	strcpy(systemSettings.ironTips[0].name, "DFLT");
 #ifdef JBC
-#warning "BUILDING FOR JBC"
-	for(uint8_t x = 0; x < 10; ++x) {
-		systemSettings.ironTips[x].calADC_At_200 = 390;
-		systemSettings.ironTips[x].calADC_At_300 = 625;
-		systemSettings.ironTips[x].calADC_At_400 = 883;
-		systemSettings.ironTips[x].PID.Kp = 0.0028;
-		systemSettings.ironTips[x].PID.Ki = 0.0018;
-		systemSettings.ironTips[x].PID.Kd = 0.00007;
-		systemSettings.ironTips[x].PID.min = 0;
-		systemSettings.ironTips[x].PID.max = 1;
-		systemSettings.ironTips[x].PID.maxI = 200;
-		systemSettings.ironTips[x].PID.minI = -50;
-	}
+	#warning "BUILDING FOR JBC"
+		for (uint8_t x = 0; x < 10; ++x) {
+			systemSettings.ironTips[x].calADC_At_200 = 390;
+			systemSettings.ironTips[x].calADC_At_300 = 625;
+			systemSettings.ironTips[x].calADC_At_400 = 883;
+			systemSettings.ironTips[x].PID.Kp = 0.0028;
+			systemSettings.ironTips[x].PID.Ki = 0.0018;
+			systemSettings.ironTips[x].PID.Kd = 0.00007;
+			systemSettings.ironTips[x].PID.min = 0;
+			systemSettings.ironTips[x].PID.max = 1;
+			systemSettings.ironTips[x].PID.maxI = 200;
+			systemSettings.ironTips[x].PID.minI = -50;
+		}
 	systemSettings.currentNumberOfTips = 2;
 	systemSettings.currentTip = 1;
 	systemSettings.sleep.sleepTemperature = 150;
 	strcpy(systemSettings.ironTips[1].name, "010");
 #else
-	for(uint8_t x = 0; x < 10; ++x) {
+	for (uint8_t x = 0; x < 10; ++x) {
 		systemSettings.ironTips[x].calADC_At_200 = 1300;
 		systemSettings.ironTips[x].calADC_At_300 = 2000;
 		systemSettings.ironTips[x].calADC_At_400 = 3000;
